@@ -1,12 +1,8 @@
 import { combineReducers } from 'redux';
-import inputFilter from './inputFilter.js';
-import contactsList from './contactsList.js';
-import inputForm from './inputForm';
+import contacts from './contacts';
+
 const rootReducer = combineReducers({
-  inputFilter,
-  contactsList,
-  inputForm,
+  contacts,
 })
 
 export default rootReducer;
-

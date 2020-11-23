@@ -1,44 +1,27 @@
 import React, { useState } from 'react';
-import styles from './ContactForm.module.css';
+import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
+
+import styles from './ContactForm.module.css';
+
+import { addContact } from '../../redux/action/contacts';
 
 const initialState = {
   number: "",
   name: "",
 }
 
-const ContactForm = ({ addContact }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch()
 
-  // state = {
-  //   number: "",
-  //   name: "",
-  // }
   const [stateForm, setStateForm] = useState(initialState);
   const { name, number } = stateForm;
 
-  // handlerInput = ({ target }) => {
-  //   const { name, value } = target;
-  //   this.setState({
-  //     [name]: value
-  //   })
-  // }
   const handlerInput = ({ target }) => {
     const { name, value } = target;
     setStateForm({ ...stateForm, [name]: value });
-    console.log(stateForm);
   }
 
-  // submitHandler = (e) => {
-  //   const { name, number } = this.state
-  //   e.preventDefault();
-  //   const singleContact = {
-  //     name,
-  //     number,
-
-  //   }
-  //   this.props.addContact(singleContact)
-  //   this.setState({ ...initialState })
-  // }
   const submitHandler = (e) => {
     e.preventDefault();
     const { name, number } = e.target;
@@ -46,10 +29,9 @@ const ContactForm = ({ addContact }) => {
       name: name.value,
       number: number.value,
     }
-    addContact(singleContact);
     setStateForm(initialState);
+    dispatch(addContact(singleContact))
   }
-
 
   return (
     <form className={styles.ContactForm} onSubmit={submitHandler}>
@@ -85,5 +67,5 @@ export default ContactForm;
 
 ContactForm.propTypes = {
   contacts: PropTypes.array.isRequired,
-  addContact: PropTypes.func.isRequired
+  // addContact: PropTypes.func.isRequired
 }

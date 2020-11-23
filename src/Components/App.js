@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import stylesApp from './App.module.css';
@@ -9,55 +9,60 @@ import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ContactItem from '../Components/ContactItem/ContactItem';
 
+import * as actions from '../redux/action/contacts';
+
+
 const filterContacts = (contacts, filter) => {
   return contacts.filter(contact => contact.name.toLowerCase().includes(filter.toLowerCase()));
 }
 
 const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
+  const contacts = useSelector(state => state.contacts.items);
+  const filter = useSelector(state => state.contacts.filter);
+  const dispatch = useDispatch();
+
   const [start, setStart] = useState(false);
   const [alert, setAlert] = useState(false);
 
+  const firstRender = useRef(false);
+
+  useEffect(() => {
+    if (firstRender.current) {
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+    } else {
+      firstRender.current = true;
+    }
+  }, [contacts]);
+
   useEffect(() => {
     const persistedContacts = localStorage.getItem('contacts');
+
     if (persistedContacts) {
-      setContacts(JSON.parse(persistedContacts))
+      dispatch(actions.setContacts(JSON.parse(persistedContacts)));
     }
+  }, [dispatch])
+
+  useEffect(() => {
     setStart(true);
   }, [])
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts))
-  }, [contacts])
-
-  useEffect(() => {
-    if (filterContacts(contacts, filter).length === 0) {
-      setFilter('')
-    }
-  }, [contacts])
-
-  const addContact = (contactObj) => {
-    const existsContact = contacts.some(el => el.name === contactObj.name);
-    if (existsContact) {
-      setAlert(true);
-      return;
-    }
-
-    setContacts([...contacts, { ...contactObj, id: uuidv4() }]);
-  }
-
-  const removeContact = (id) => {
-    setContacts(contacts.filter(el => el.id !== id));
-  }
-
-  const filterHandler = (e) => {
-    setFilter(e.target.value);
-  }
+  // useEffect(() => {
+  // if (filterContacts(contacts, filter).length === 0) {
+  //   setFilter('')
+  // }
+  // }, [contacts])
 
   const deleteAlert = () => {
     setAlert(false);
   };
+
+  const filterHandler = (e) => {
+    dispatch(actions.editInputFilter(e.target.value));
+  }
+
+  const removeContact = (id) => (e) => {
+    dispatch(actions.removeContact(id));
+  }
 
   const filteredContacts = filterContacts(contacts, filter);
 
@@ -78,7 +83,7 @@ const App = () => {
             className={styles.alertBtn}
             type="button"
           >X
-              </button>
+          </button>
         </div>
       </CSSTransition>
       <CSSTransition classNames={{
@@ -87,8 +92,7 @@ const App = () => {
         <h2 className={stylesApp.title}>Phonebook </h2>
       </CSSTransition>
 
-
-      <ContactForm contacts={contacts} addContact={addContact} />
+      <ContactForm contacts={contacts} />
       <Filter filter={filter} filterHandler={filterHandler} />
 
       <TransitionGroup className={stylesApp.contactsList} component="ul">
