@@ -52,9 +52,6 @@ const App = () => {
   // }
   // }, [contacts])
 
-  const deleteAlert = () => {
-    setAlert(false);
-  };
 
   const filterHandler = (e) => {
     dispatch(actions.editInputFilter(e.target.value));
@@ -76,10 +73,11 @@ const App = () => {
         unmountOnExit
         timeout={300}
         in={alert}>
+
         <div className={stylesApp.alertBox}>
           <h2>{`The name is already a contact`}</h2>
           <button
-            onClick={deleteAlert}
+            onClick={() => setAlert(false)}
             className={styles.alertBtn}
             type="button"
           >X
@@ -92,7 +90,7 @@ const App = () => {
         <h2 className={stylesApp.title}>Phonebook </h2>
       </CSSTransition>
 
-      <ContactForm contacts={contacts} />
+      <ContactForm setAlert={setAlert} />
       <Filter filter={filter} filterHandler={filterHandler} />
 
       <TransitionGroup className={stylesApp.contactsList} component="ul">

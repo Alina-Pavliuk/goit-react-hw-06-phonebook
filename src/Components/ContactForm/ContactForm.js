@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from "react-redux";
-import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from './ContactForm.module.css';
 
@@ -11,8 +10,9 @@ const initialState = {
   name: "",
 }
 
-const ContactForm = () => {
+const ContactForm = ({ setAlert }) => {
   const dispatch = useDispatch()
+  const contacts = useSelector(state => state.contacts.items)
 
   const [stateForm, setStateForm] = useState(initialState);
   const { name, number } = stateForm;
@@ -29,8 +29,13 @@ const ContactForm = () => {
       name: name.value,
       number: number.value,
     }
-    setStateForm(initialState);
-    dispatch(addContact(singleContact))
+    if (contacts.some(contact => contact.name === name.value)) {
+      setAlert(true)
+    } else {
+      dispatch(addContact(singleContact))
+      setStateForm({ ...initialState })
+    }
+
   }
 
   return (
@@ -65,7 +70,3 @@ const ContactForm = () => {
 
 export default ContactForm;
 
-ContactForm.propTypes = {
-  contacts: PropTypes.array.isRequired,
-  // addContact: PropTypes.func.isRequired
-}
