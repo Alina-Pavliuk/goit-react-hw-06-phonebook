@@ -46,12 +46,6 @@ const App = () => {
     setStart(true);
   }, [])
 
-  // useEffect(() => {
-  // if (filterContacts(contacts, filter).length === 0) {
-  //   setFilter('')
-  // }
-  // }, [contacts])
-
   const filterHandler = (e) => {
     dispatch(actions.editInputFilter(e.target.value));
   }
