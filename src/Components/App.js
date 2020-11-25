@@ -52,13 +52,16 @@ const App = () => {
   // }
   // }, [contacts])
 
-
   const filterHandler = (e) => {
     dispatch(actions.editInputFilter(e.target.value));
   }
 
   const removeContact = (id) => (e) => {
     dispatch(actions.removeContact(id));
+  }
+
+  const addContact = (singleContact) => {
+    dispatch(actions.addContact(singleContact))
   }
 
   const filteredContacts = filterContacts(contacts, filter);
@@ -90,7 +93,7 @@ const App = () => {
         <h2 className={stylesApp.title}>Phonebook </h2>
       </CSSTransition>
 
-      <ContactForm setAlert={setAlert} />
+      <ContactForm setAlert={setAlert} addContact={addContact} contacts={contacts} />
       <Filter filter={filter} filterHandler={filterHandler} />
 
       <TransitionGroup className={stylesApp.contactsList} component="ul">

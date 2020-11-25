@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
 
 import styles from './ContactForm.module.css';
-
-import { addContact } from '../../redux/action/contacts';
 
 const initialState = {
   number: "",
   name: "",
 }
 
-const ContactForm = ({ setAlert }) => {
-  const dispatch = useDispatch()
-  const contacts = useSelector(state => state.contacts.items)
-
+const ContactForm = ({ setAlert, addContact, contacts }) => {
   const [stateForm, setStateForm] = useState(initialState);
   const { name, number } = stateForm;
 
@@ -32,10 +26,9 @@ const ContactForm = ({ setAlert }) => {
     if (contacts.some(contact => contact.name === name.value)) {
       setAlert(true)
     } else {
-      dispatch(addContact(singleContact))
+      addContact(singleContact)
       setStateForm({ ...initialState })
     }
-
   }
 
   return (
@@ -67,6 +60,4 @@ const ContactForm = ({ setAlert }) => {
   );
 }
 
-
 export default ContactForm;
-
