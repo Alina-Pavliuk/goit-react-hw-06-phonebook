@@ -36,15 +36,12 @@ const App = () => {
 
   useEffect(() => {
     const persistedContacts = localStorage.getItem('contacts');
-
+    setStart(true);
     if (persistedContacts) {
       dispatch(actions.setContacts(JSON.parse(persistedContacts)));
     }
   }, [dispatch])
 
-  useEffect(() => {
-    setStart(true);
-  }, [])
 
   const filterHandler = (e) => {
     dispatch(actions.editInputFilter(e.target.value));
